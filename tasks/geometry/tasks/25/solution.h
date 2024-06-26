@@ -2,97 +2,94 @@
 
 #include <stdio.h>
 
-const int MAX_ITEREATIONS = 50;
-const int CORD_X1 = -10;
-const int CORD_X2 = 0;
-const int CORD_Y1 = 0;
-const int CORD_Y2 = 10;
-const int CORD_X3 = -10;
-const int CORD_Y3 = 20;
-const int MOD_20 = 20;
+// INITIAL VALUES
+const int INITIAL_VLUAES_I = -8;
+const int INITIAL_VLUAES_J = -5;
+const int INITIAL_VLUAES_L = 12;
+
+// AUXILIARY VARIABLES
 const int MOD_30 = 30;
+const int TWO = 2;
+const int Mod_20 = 20;
+const int MAX_ITERETIONS = 50;
+const int X_1 = -10;
+const int Y_1 = 10;
 
 typedef struct {
-    int x;
-    int y;
+  int x;
+  int y;
 } Point;
 
+int Pow(int value, int degree) {
+  if (degree == 0) {
+    return 1;
+  } else {
+    int result = 1;
+    for (int i = 0; i < degree; ++i) {
+      result *= value;
+    }
+    return result;
+  }
+}
+
+int Abs(int a) {
+  return (a >= 0) ? a : -a;
+}
+
+int Mod(int value_1, int value_2) {
+  return Abs(value_1 % value_2);
+}
+
+int Sign(int num) {
+  if (num > 0) {
+    return 1;
+  } else if (num < 0) {
+    return -1;
+  } else {
+    return 0;
+  }
+}
+
+int MaxValue(int a, int b) {
+  return a > b ? a : b;
+}
+int MinValue(int a, int b) {
+  return a < b ? a : b;
+}
+
 int CheckZone(Point p) {
-    return ((p.y) >= ((p.x) + CORD_Y2)) && ((p.y) <= ((-1) * (p.x) + CORD_Y2)) && (((p.x) > CORD_X3));
-}
-
-int Abs(int x) {
-    if (x > 0) {
-        return x;
-    } else {
-        return x * -1;
-    }
-}
-
-int Mod(int x, int y) {
-    if (y > 0) {
-        return x % y;
-    } else {
-        return Abs(x) - Abs(y) * (x / y);
-    }
-}
-
-int Sign(int x) {
-    if (x > 0) {
-        return 1;
-    }
-
-    if (x < 0) {
-        return -1;
-    } else {
-        return 0;
-    }
-}
-
-int Max(int x, int y) {
-    if (x > y) {
-        return x;
-    } else {
-        return y;
-    }
-}
-
-int Min(int x, int y) {
-    if (x < y) {
-        return x;
-    } else {
-        return y;
-    }
+  if (p.y >= Y_1 && p.y <= -p.x - X_1 && p.y >= p.x - X_1) {
+    return 1;
+  }
+  return 0;
 }
 
 int Task() {
-    const int i_start = -8;
-    const int j_start = -5;
-    const int l_start = 12;
-    int i_0 = i_start;
-    int j_0 = j_start;
-    int l_0 = l_start;
-    Point p;
-    int i_1 = 0;
-    int j_1 = 0;
-    int l_1 = 0;
-    bool flag = false;
-    for (int i = 0; i < MAX_ITEREATIONS; ++i) {
-        p.x = i_0;
-        p.y = j_0;
-        if (CheckZone(p)) {
-            printf("x=%d, y=%d k=%d\n", i_0, j_0, i);
-            flag = true;
-        }
-        i_1 = Mod((i_0 ^ 2) / (Abs(j_0 - l_0) + i + 1) - (j_0 ^ 2) / (Abs(i_0 - l_0) + i + 1), MOD_30);
-        j_1 = Sign(l_0 * Min(i_0, j_0)) - Sign(j_0 * Max(i_0, l_0)) + i;
-        l_1 = Mod((i_0 - j_0) * (j_0 - l_0) * (l_0 - i_0), MOD_20);
-        i_0 = i_1;
-        j_0 = j_1;
-        l_0 = l_1;
+  int i = INITIAL_VLUAES_I;
+  int j = INITIAL_VLUAES_J;
+  int l = INITIAL_VLUAES_L;
+  int is_point_hit_zone = 0;
+  Point p;
+  p.x = i;
+  p.y = j;
+  for (int k = 1; k < MAX_ITERETIONS; k++) {
+    i = Mod(((Pow(p.x, TWO)/(Abs(p.y - l) + k + 1)) - (Pow(p.y, 2) / (Abs(p.x - l) + k + 1))), MOD_30);
+    j = Sign(l) * MinValue(p.x, p.y) - Sign(p.y) * MaxValue(p.x, l) + k;
+    l = (p.x - p.y) * (p.y - l) * Mod((l - p.x), Mod_20);
+
+    p.x = i;
+    p.y = j;
+    if (CheckZone(p)) {
+      is_point_hit_zone++;
     }
-    if (flag == false) {
-        printf("Таких точек нет");
-    }
-    return 0;
+    printf("iter: %d, x = %d, y = %d, check = %d\n", k, p.x, p.y, CheckZone(p));
+
+  }
+  if (is_point_hit_zone == 0) {
+    printf("Do not have point in zone");
+  } else {
+    printf("Do have point in zone they count = %d", is_point_hit_zone);
+  }
+
+  return 0;
 }
