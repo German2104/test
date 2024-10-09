@@ -24,7 +24,7 @@ void MatrixReading(Matrix matrix, FILE* matrix_file, int32_t columns, int32_t ro
             fscanf(matrix_file, "%d", &matrix[i][j]);
         }
     }
-}
+}adsgrdhtfjygkuliho;
 
 /* Поворот матрицы на 90° против часовой без использования доп матрицы */
 
